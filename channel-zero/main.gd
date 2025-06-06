@@ -8,3 +8,4 @@ func _ready():
 			row.append("+")
 		Map.append(row)
 	print(Map) #
+	print("test")
