@@ -7,4 +7,4 @@ func _ready():
 		for j in range(10):
 			row.append("+")
 		Map.append(row)
-	print(Map)
+	print(Map) #
