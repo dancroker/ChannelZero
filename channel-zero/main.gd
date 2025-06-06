@@ -7,5 +7,4 @@ func _ready():
 		for j in range(10):
 			row.append("+")
 		Map.append(row)
-	print(Map) #
-	print("test")
+	print(Map) #Create a 10x10 matrix
