@@ -1,6 +1,27 @@
-[gd_scene load_steps=2 format=3 uid="uid://cxr8sr6x57c3b"]
+[gd_scene load_steps=6 format=3 uid="uid://cxr8sr6x57c3b"]
 
 [ext_resource type="Script" uid="uid://bbt8q23ibyvme" path="res://main.gd" id="1_glv2v"]
+[ext_resource type="Texture2D" uid="uid://du15yd64iu7ge" path="res://Assets/MapTileTemp.png" id="2_r0du0"]
+[ext_resource type="Script" uid="uid://dfq7ndkcdv7ui" path="res://MapRenderer.gd" id="3_cm0pq"]
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_r0du0"]
+texture = ExtResource("2_r0du0")
+0:0/0 = 0
+1:0/0 = 0
+2:0/0 = 0
+3:0/0 = 0
+
+[sub_resource type="TileSet" id="TileSet_cm0pq"]
+sources/0 = SubResource("TileSetAtlasSource_r0du0")
 
 [node name="Node2D" type="Node2D"]
 script = ExtResource("1_glv2v")
+
+[node name="TileMap" type="TileMap" parent="."]
+tile_set = SubResource("TileSet_cm0pq")
+format = 2
+
+[node name="MapRender" type="Node2D" parent="TileMap"]
+script = ExtResource("3_cm0pq")
+
+[node name="Node2D" type="Node2D" parent="."]
