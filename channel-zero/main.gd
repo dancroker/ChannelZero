@@ -6,16 +6,19 @@ var Map = []
 var Visited = []
 
 func _ready():
-	var generated_map = GenerateMap(12, 12, 50)
-	const TilePush = 78.5 #Vector distance between middle of tiles
+	var generated_map = GenerateMap(12, 12, 110)
 	PrintMap(generated_map)
-	var Team = LoadTeam(0,0,0)
+	DisplayTeam()
+	var enemy_instance = Enemy.new()
+	#enemy_instance.test()
+	add_child(enemy_instance)  
+	enemy_instance.DrawSelf(Map)
+
+func DisplayTeam():
+	const TilePush = 78.5 #Vector distance between middle of tiles
+	var Team = LoadPlayer(0)
 	var Member1 = Team[0]
-	var Member2 = Team[1]
-	var Member3 = Team[2]
 	var Member1Location = [0,0]
-	var Member2Location = [0,0]
-	var Member3Location = [0,0]
 	var Placed = false
 	for x in range(len(Map)):
 		for y in range(len(Map[0])):
@@ -24,34 +27,13 @@ func _ready():
 				Member1.scale = Vector2(4.91, 4.91)
 				Member1Location = [y,x]
 				Placed = true
-	Placed = false
-	for x in range(len(Map)):
-		for y in range(len(Map[0])):
-			if Map[x][y] == "o" and Placed == false and [y,x] != Member1Location:
-				Member2.global_position = Vector2(42+(TilePush*y), 36+(TilePush*x))
-				Member2.scale = Vector2(4.91, 4.91)
-				Member2Location = [y,x]
-				Placed = true
-	Placed = false
-	for x in range(len(Map)):
-		for y in range(len(Map[0])):
-			if Map[x][y] == "o" and Placed == false and [y,x] != Member1Location and [y,x] != Member2Location:
-				Member3.global_position = Vector2(42+(TilePush*y), 36+(TilePush*x))
-				Member3.scale = Vector2(4.91, 4.91)
-				Placed = true
-	
 
-func LoadTeam(Member1File,Member2File,Member3File):
+func LoadPlayer(Member1File):
 	var Member1Scene = preload("res://Characters/RedKnight.tscn")
 	var Member1 = Member1Scene.instantiate()
 	add_child(Member1)
-	var Member2Scene = preload("res://Characters/BlueKnight.tscn")
-	var Member2 = Member2Scene.instantiate()
-	add_child(Member2)
-	var Member3Scene = preload("res://Characters/Hazmat.tscn")
-	var Member3 = Member3Scene.instantiate()
-	add_child(Member3)
-	return[Member1,Member2,Member3]
+	return[Member1]
+
 
 func PathThroughMap(pMap):
 	Map = pMap
@@ -142,10 +124,23 @@ func PlayerSpawnLocations(Map, SpawnLocationCount):
 
 func GenerateMap(RowCount, ColCount, PathCount):
 	var Map = []
-	while MapValueCount(Map, ".") != PathCount:
+	var IsThereExitLocation = false
+	Map = FormRandomMap(RowCount, ColCount)
+	while (MapValueCount(Map, ".") != (PathCount-1) or IsThereExitLocation == false): #-1 for the spawn locaton
 		Map = FormRandomMap(RowCount, ColCount)
-	PlayerSpawnLocations(Map,3)
-	EnemySpawnLocations(Map, 3)
+		IsThereExitLocation = false
+		for x in range(len(Map)-1,0,-1):
+			if Map[x][len(Map[0])-1] == "." and IsThereExitLocation == false:
+				Map[x][len(Map[0])-1] = "@"
+				IsThereExitLocation = true
+		for y in range(len(Map[0])-1,0,-1):
+			if Map[len(Map)-1][y] == "." and IsThereExitLocation == false:
+				Map[len(Map)-1][y]= "@"
+				IsThereExitLocation = true
+				
+				
+	PlayerSpawnLocations(Map,1)
+	EnemySpawnLocations(Map, 5)
 	$TileMap/MapRender.draw_map_visual(Map)
 	$TileMap.scale = Vector2(4.91, 4.91)
 	#$TileMap.position = Vector2(250, 0)
